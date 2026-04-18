@@ -21,19 +21,25 @@ if ($ForceRestart) {
     Get-Process sidecar-daemon -ErrorAction SilentlyContinue | Stop-Process -Force
 }
 
-$candidates = @(
-    (Join-Path $PSScriptRoot "..\sidecar\target\$Configuration\sidecar-daemon.exe"),
+$normalizedConfiguration = $Configuration.ToLowerInvariant()
+$candidates = @(@(
+    (Join-Path $PSScriptRoot "..\sidecar\target\$normalizedConfiguration\sidecar-daemon.exe"),
     (Join-Path $PSScriptRoot "..\sidecar\target\debug\sidecar-daemon.exe"),
     (Join-Path $PSScriptRoot "..\sidecar\target\release\sidecar-daemon.exe")
-) | Where-Object { Test-Path $_ }
+) | Where-Object { Test-Path $_ })
 
 if (-not $candidates) {
     throw "No built sidecar-daemon.exe found. Build Rust workspace first."
 }
 
-$sidecar = $candidates[0]
+$sidecar = [string]$candidates[0]
+$workingDirectory = Split-Path -Parent $sidecar
+if ([string]::IsNullOrWhiteSpace($workingDirectory)) {
+    throw "Failed to resolve sidecar working directory from path: $sidecar"
+}
+
 Write-Host "Starting sidecar:" $sidecar
-$process = Start-Process -FilePath $sidecar -WorkingDirectory (Split-Path $sidecar) -PassThru -WindowStyle Hidden
+$process = Start-Process -FilePath $sidecar -WorkingDirectory $workingDirectory -PassThru -WindowStyle Hidden
 
 for ($attempt = 0; $attempt -lt 30; $attempt++) {
     Start-Sleep -Milliseconds 200

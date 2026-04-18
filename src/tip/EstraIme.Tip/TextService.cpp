@@ -1,4 +1,5 @@
 #include "TextService.h"
+#include "TipGuids.h"
 
 #include "../../common/EstraIme.Common/Log.h"
 #include "../../common/EstraIme.Common/TextUtils.h"
@@ -235,15 +236,15 @@ namespace EstraIme::Tip
         const bool altPressed = HasAltPressed();
         const bool winPressed = HasWinPressed();
 
-        if (shiftPressed_ && !IsShiftKey(wParam))
+        if (((GetKeyState(VK_SHIFT) & 0x8000) != 0) && !IsShiftKey(wParam))
         {
             shiftChordUsed_ = true;
         }
 
         if (IsShiftKey(wParam))
         {
-            shiftPressed_ = true;
             shiftChordUsed_ = false;
+            Common::Logger::Info(std::format(L"Shift test-down: vkey=0x{:X}", static_cast<unsigned>(wParam)));
             return S_OK;
         }
 
@@ -278,16 +279,7 @@ namespace EstraIme::Tip
 
         if (IsShiftKey(wParam))
         {
-            const bool shouldToggle = shiftPressed_ && !shiftChordUsed_ && composition_.empty();
-            shiftPressed_ = false;
-            shiftChordUsed_ = false;
-
-            if (shouldToggle)
-            {
-                chineseMode_ = !chineseMode_;
-                candidateWindow_.Hide();
-                *eaten = TRUE;
-            }
+            Common::Logger::Info(std::format(L"Shift test-up: vkey=0x{:X}", static_cast<unsigned>(wParam)));
         }
 
         return S_OK;
@@ -441,10 +433,20 @@ namespace EstraIme::Tip
 
         if (IsShiftKey(wParam))
         {
-            const bool shouldToggle = shiftPressed_ && !shiftChordUsed_ && composition_.empty();
-            shiftPressed_ = false;
             shiftChordUsed_ = false;
+        }
 
+        return S_OK;
+    }
+
+    STDMETHODIMP TextService::OnPreservedKey(ITfContext*, REFGUID guid, BOOL* eaten)
+    {
+        *eaten = FALSE;
+        if (guid == GUID_EstraImeShiftToggle)
+        {
+            const bool shouldToggle = !shiftChordUsed_ && composition_.empty();
+            Common::Logger::Info(std::format(L"OnPreservedKey shift toggle fired: shouldToggle={}", shouldToggle ? L"true" : L"false"));
+            shiftChordUsed_ = false;
             if (shouldToggle)
             {
                 chineseMode_ = !chineseMode_;
@@ -452,13 +454,6 @@ namespace EstraIme::Tip
                 *eaten = TRUE;
             }
         }
-
-        return S_OK;
-    }
-
-    STDMETHODIMP TextService::OnPreservedKey(ITfContext*, REFGUID, BOOL* eaten)
-    {
-        *eaten = FALSE;
         return S_OK;
     }
 
@@ -503,6 +498,19 @@ namespace EstraIme::Tip
             {
                 return hr;
             }
+
+            TF_PRESERVEDKEY shiftKey{};
+            shiftKey.uVKey = VK_SHIFT;
+            shiftKey.uModifiers = TF_MOD_ON_KEYUP;
+            const auto preserveHr = keystrokeMgr->PreserveKey(clientId_, GUID_EstraImeShiftToggle, &shiftKey, L"Toggle Chinese/English", static_cast<ULONG>(wcslen(L"Toggle Chinese/English")));
+            if (FAILED(preserveHr))
+            {
+                Common::Logger::Warn(std::format(L"PreserveKey(VK_SHIFT, ON_KEYUP) failed: 0x{:08X}", static_cast<unsigned>(preserveHr)));
+            }
+            else
+            {
+                Common::Logger::Info(L"PreserveKey(VK_SHIFT, ON_KEYUP) registered");
+            }
         }
 
         auto source = threadMgr_.as<ITfSource>();
@@ -524,6 +532,10 @@ namespace EstraIme::Tip
         {
             if (auto keystrokeMgr = threadMgr_.try_as<ITfKeystrokeMgr>())
             {
+                TF_PRESERVEDKEY shiftKey{};
+                shiftKey.uVKey = VK_SHIFT;
+                shiftKey.uModifiers = TF_MOD_ON_KEYUP;
+                keystrokeMgr->UnpreserveKey(GUID_EstraImeShiftToggle, &shiftKey);
                 keystrokeMgr->UnadviseKeyEventSink(clientId_);
             }
 
@@ -793,6 +805,27 @@ STDMETHODIMP EstraIme::Tip::TextService::EditSession::DoEditSession(const TfEdit
         return E_FAIL;
     }
 
+    const auto collapseSelectionToRangeEnd = [&](ITfRange* sourceRange) -> HRESULT {
+        winrt::com_ptr<ITfRange> caretRange;
+        auto selectionHr = sourceRange->Clone(caretRange.put());
+        if (FAILED(selectionHr))
+        {
+            return selectionHr;
+        }
+
+        selectionHr = caretRange->Collapse(ec, TF_ANCHOR_END);
+        if (FAILED(selectionHr))
+        {
+            return selectionHr;
+        }
+
+        TF_SELECTION selection{};
+        selection.range = caretRange.get();
+        selection.style.ase = TF_AE_NONE;
+        selection.style.fInterimChar = FALSE;
+        return context->SetSelection(ec, 1, &selection);
+    };
+
     if (action_ == EditAction::Clear)
     {
         if (owner_->compositionRange_)
@@ -831,6 +864,13 @@ STDMETHODIMP EstraIme::Tip::TextService::EditSession::DoEditSession(const TfEdit
         {
             return hr;
         }
+
+        hr = collapseSelectionToRangeEnd(range.get());
+        if (FAILED(hr))
+        {
+            return hr;
+        }
+
         if (action_ == EditAction::Commit)
         {
             owner_->compositionRange_->EndComposition(ec);
