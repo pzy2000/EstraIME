@@ -1,0 +1,21 @@
+{
+  "generated_at_unix": 1776540683,
+  "entry_count": 120000,
+  "min_freq": 5,
+  "max_entries": 120000,
+  "sources": [
+    {
+      "name": "jieba-dict",
+      "url": "https://raw.githubusercontent.com/fxsjy/jieba/master/jieba/dict.txt",
+      "license": "MIT",
+      "license_url": "https://github.com/fxsjy/jieba/blob/master/LICENSE",
+      "role": "base word frequency dictionary"
+    },
+    {
+      "name": "pypinyin",
+      "license": "MIT",
+      "license_url": "https://github.com/mozillazg/python-pinyin/blob/master/LICENSE",
+      "role": "phrase-to-pinyin conversion during lexicon generation"
+    }
+  ]
+}

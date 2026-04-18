@@ -1,43 +1,44 @@
 param(
-    [string]$InputPath = "$PSScriptRoot\..\..\data\seed\base_lexicon_seed.tsv",
-    [string]$OutputPath = "$PSScriptRoot\..\..\data\generated\base_lexicon.tsv"
+    [string]$OutputPath = "$PSScriptRoot\..\..\data\generated\base_lexicon.tsv",
+    [string]$CacheRoot = "$PSScriptRoot\..\..\data\cache",
+    [int]$MaxEntries = 120000,
+    [int]$MinFreq = 5,
+    [switch]$RefreshSources
 )
 
 $ErrorActionPreference = "Stop"
 
-if (-not (Test-Path $InputPath)) {
-    throw "Seed lexicon not found: $InputPath"
-}
-
-$items = @{}
-Get-Content $InputPath -Encoding UTF8 | ForEach-Object {
-    if ([string]::IsNullOrWhiteSpace($_)) {
-        return
-    }
-
-    $parts = $_ -split "`t"
-    if ($parts.Length -lt 3) {
-        return
-    }
-
-    $key = "$($parts[0])`t$($parts[1])"
-    $freq = [int]$parts[2]
-    if ($items.ContainsKey($key)) {
-        if ($freq -gt $items[$key].Freq) {
-            $items[$key] = [PSCustomObject]@{ Pinyin = $parts[0]; Text = $parts[1]; Freq = $freq }
-        }
-    }
-    else {
-        $items[$key] = [PSCustomObject]@{ Pinyin = $parts[0]; Text = $parts[1]; Freq = $freq }
-    }
-}
+$venvRoot = Join-Path $PSScriptRoot ".venv"
+$venvPython = Join-Path $venvRoot "Scripts\python.exe"
+$requirements = Join-Path $PSScriptRoot "requirements.txt"
+$builder = Join-Path $PSScriptRoot "build_lexicon.py"
 
 $outputDir = Split-Path $OutputPath -Parent
 New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
+New-Item -ItemType Directory -Force -Path $CacheRoot | Out-Null
 
-$items.Values |
-    Sort-Object Pinyin, @{ Expression = "Freq"; Descending = $true }, Text |
-    ForEach-Object { "$($_.Pinyin)`t$($_.Text)`t$($_.Freq)" } |
-    Set-Content -Path $OutputPath -Encoding UTF8
+$resolvedOutputDir = (Resolve-Path $outputDir).Path
+$resolvedCacheRoot = (Resolve-Path $CacheRoot).Path
 
-Write-Host "Generated lexicon:" $OutputPath
+if (-not (Test-Path $venvPython)) {
+    Write-Host "Creating lexicon-builder virtual environment"
+    python -m venv $venvRoot
+}
+
+Write-Host "Installing lexicon-builder requirements"
+& $venvPython -m pip install --disable-pip-version-check -r $requirements
+
+$arguments = @(
+    $builder,
+    "--output", $resolvedOutputDir,
+    "--output-file", (Split-Path $OutputPath -Leaf),
+    "--cache-root", $resolvedCacheRoot,
+    "--max-entries", "$MaxEntries",
+    "--min-freq", "$MinFreq"
+)
+
+if ($RefreshSources) {
+    $arguments += "--refresh-sources"
+}
+
+& $venvPython @arguments

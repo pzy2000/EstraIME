@@ -58,6 +58,7 @@ pwsh -File .\tools\lexicon-builder\Build-Lexicon.ps1
 
 - C++ TIP DLL 与引擎测试
 - Rust sidecar workspace
+- `lexicon-builder` 可生成大规模基础词典
 - 不默认编译 WinUI 3 设置程序，因为当前环境通常缺少 Windows App SDK NuGet cache
 
 如需尝试设置程序：
@@ -83,6 +84,25 @@ pwsh -File .\build\Run-DevIME.ps1 -StartSidecar
 3. 在 Windows 输入法设置里启用 `EstraIME Alpha`。
 4. 使用 `.\build\Test-Sidecar.ps1` 检查 sidecar 健康状态。
 5. 使用 `.\build\Test-TypingCheckList.ps1` 跑手工联调 checklist。
+
+## 词典构建
+
+当前词典生成链路已经升级为真实开源数据管线：
+
+- `jieba` 默认词典提供基础词频
+- `pypinyin` 提供批量拼音转换
+- 仓库内 seed 词典继续用于强制补齐 alpha 关键词
+
+生成命令：
+
+```powershell
+.\tools\lexicon-builder\Build-Lexicon.ps1 -MaxEntries 120000 -MinFreq 5
+```
+
+产物：
+
+- `data/generated/base_lexicon.tsv`
+- `data/generated/base_lexicon.meta.json`
 
 ## 设计原则
 
