@@ -439,16 +439,21 @@ namespace EstraIme::Tip
         return S_OK;
     }
 
-    STDMETHODIMP TextService::OnPreservedKey(ITfContext*, REFGUID guid, BOOL* eaten)
+    STDMETHODIMP TextService::OnPreservedKey(ITfContext* context, REFGUID guid, BOOL* eaten)
     {
         *eaten = FALSE;
         if (guid == GUID_EstraImeShiftToggle)
         {
-            const bool shouldToggle = !shiftChordUsed_ && composition_.empty();
+            const bool hasComposition = !composition_.empty();
+            const bool shouldToggle = !shiftChordUsed_;
             Common::Logger::Info(std::format(L"OnPreservedKey shift toggle fired: shouldToggle={}", shouldToggle ? L"true" : L"false"));
             shiftChordUsed_ = false;
             if (shouldToggle)
             {
+                if (hasComposition)
+                {
+                    CommitRawCompositionAsEnglish(context);
+                }
                 chineseMode_ = !chineseMode_;
                 candidateWindow_.Hide();
                 *eaten = TRUE;
@@ -634,6 +639,31 @@ namespace EstraIme::Tip
         }
         std::scoped_lock lock(stateMutex_);
         ResetCandidates();
+        candidateWindow_.Hide();
+    }
+
+    void TextService::CommitRawCompositionAsEnglish(ITfContext* context)
+    {
+        std::wstring rawComposition;
+        {
+            std::scoped_lock lock(stateMutex_);
+            rawComposition = composition_;
+        }
+
+        if (rawComposition.empty())
+        {
+            return;
+        }
+
+        UpdateComposition(context, true, rawComposition);
+        if (debounceThread_.joinable())
+        {
+            debounceThread_.request_stop();
+        }
+        {
+            std::scoped_lock lock(stateMutex_);
+            ResetCandidates();
+        }
         candidateWindow_.Hide();
     }
 

@@ -73,6 +73,7 @@ namespace EstraIme::Tip
         void RefreshVisiblePage();
         void ScheduleAsyncAutocomplete();
         void CommitCandidate(ITfContext* context, const std::wstring& text);
+        void CommitRawCompositionAsEnglish(ITfContext* context);
         void CancelComposition(ITfContext* context);
         void UpdateComposition(ITfContext* context, bool commit, const std::wstring& text);
         void InsertMappedPunctuation(ITfContext* context, wchar_t ch);
