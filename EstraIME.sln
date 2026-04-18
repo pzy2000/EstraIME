@@ -1,0 +1,31 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37203.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EstraIme.Tip", "src\tip\EstraIme.Tip\EstraIme.Tip.vcxproj", "{A8A3A29E-4B5A-4E08-8677-2A38E0F998A3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EstraIme.Engine.Tests", "tests\cpp-unit\EstraIme.Engine.Tests.vcxproj", "{F9BC6C28-6BFE-4DA6-BF9A-137A52D46D39}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EstraIme.Settings", "src\settings\EstraIme.Settings\EstraIme.Settings.vcxproj", "{B3D2D8F2-0F3B-49DE-9D37-C225DE714B4D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A8A3A29E-4B5A-4E08-8677-2A38E0F998A3}.Debug|x64.ActiveCfg = Debug|x64
+		{A8A3A29E-4B5A-4E08-8677-2A38E0F998A3}.Debug|x64.Build.0 = Debug|x64
+		{A8A3A29E-4B5A-4E08-8677-2A38E0F998A3}.Release|x64.ActiveCfg = Release|x64
+		{A8A3A29E-4B5A-4E08-8677-2A38E0F998A3}.Release|x64.Build.0 = Release|x64
+		{F9BC6C28-6BFE-4DA6-BF9A-137A52D46D39}.Debug|x64.ActiveCfg = Debug|x64
+		{F9BC6C28-6BFE-4DA6-BF9A-137A52D46D39}.Debug|x64.Build.0 = Debug|x64
+		{F9BC6C28-6BFE-4DA6-BF9A-137A52D46D39}.Release|x64.ActiveCfg = Release|x64
+		{F9BC6C28-6BFE-4DA6-BF9A-137A52D46D39}.Release|x64.Build.0 = Release|x64
+		{B3D2D8F2-0F3B-49DE-9D37-C225DE714B4D}.Debug|x64.ActiveCfg = Debug|x64
+		{B3D2D8F2-0F3B-49DE-9D37-C225DE714B4D}.Release|x64.ActiveCfg = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

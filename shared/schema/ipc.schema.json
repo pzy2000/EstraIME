@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EstraIME IPC Message",
+  "type": "object",
+  "properties": {
+    "method": {
+      "type": "string",
+      "enum": [
+        "autocomplete.request",
+        "autocomplete.cancel",
+        "health.get",
+        "learn.commit"
+      ]
+    },
+    "session_id": { "type": "string" },
+    "request_id": { "type": "string" },
+    "generation_id": { "type": "integer" },
+    "context_before": { "type": "string" },
+    "composition_text": { "type": "string" },
+    "caret_caps": {
+      "type": "object",
+      "properties": {
+        "supports_ui": { "type": "boolean" },
+        "secure_input": { "type": "boolean" }
+      }
+    }
+  },
+  "required": ["method"]
+}

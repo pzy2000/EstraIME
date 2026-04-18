@@ -1,0 +1,13 @@
+[package]
+name = "provider-mock"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+async-trait.workspace = true
+provider-api = { path = "../provider-api" }
+
+[dev-dependencies]
+tokio.workspace = true

@@ -1,0 +1,25 @@
+[workspace]
+members = [
+  "crates/provider-api",
+  "crates/provider-mock",
+  "crates/provider-llama-cpp",
+  "crates/provider-cloud-stub",
+  "crates/config-store",
+  "crates/sidecar-daemon"
+]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+license = "Apache-2.0"
+version = "0.1.0"
+
+[workspace.dependencies]
+anyhow = "1.0"
+async-trait = "0.1"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.44", features = ["rt-multi-thread", "macros", "net", "io-util", "time", "sync"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"] }

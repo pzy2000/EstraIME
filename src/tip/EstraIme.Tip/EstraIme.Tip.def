@@ -1,0 +1,6 @@
+LIBRARY "EstraIme.Tip"
+EXPORTS
+    DllCanUnloadNow
+    DllGetClassObject
+    DllRegisterServer
+    DllUnregisterServer

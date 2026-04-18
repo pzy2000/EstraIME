@@ -1,0 +1,11 @@
+C:\Users\ROG\Documents\EstraIME\src\common\EstraIme.Common\ConfigStore.cpp;C:\Users\ROG\Documents\EstraIME\artifacts\obj\EstraIme.Tip\x64\Debug\ConfigStore.obj
+C:\Users\ROG\Documents\EstraIME\src\common\EstraIme.Common\IpcClient.cpp;C:\Users\ROG\Documents\EstraIME\artifacts\obj\EstraIme.Tip\x64\Debug\IpcClient.obj
+C:\Users\ROG\Documents\EstraIME\src\common\EstraIme.Common\Log.cpp;C:\Users\ROG\Documents\EstraIME\artifacts\obj\EstraIme.Tip\x64\Debug\Log.obj
+C:\Users\ROG\Documents\EstraIME\src\engine\EstraIme.Engine\PinyinEngine.cpp;C:\Users\ROG\Documents\EstraIME\artifacts\obj\EstraIme.Tip\x64\Debug\PinyinEngine.obj
+C:\Users\ROG\Documents\EstraIME\src\fusion\EstraIme.Fusion\CandidateFusion.cpp;C:\Users\ROG\Documents\EstraIME\artifacts\obj\EstraIme.Tip\x64\Debug\CandidateFusion.obj
+C:\Users\ROG\Documents\EstraIME\src\ui\EstraIme.CandidateWindow\CandidateWindow.cpp;C:\Users\ROG\Documents\EstraIME\artifacts\obj\EstraIme.Tip\x64\Debug\CandidateWindow.obj
+C:\Users\ROG\Documents\EstraIME\src\tip\EstraIme.Tip\ClassFactory.cpp;C:\Users\ROG\Documents\EstraIME\artifacts\obj\EstraIme.Tip\x64\Debug\ClassFactory.obj
+C:\Users\ROG\Documents\EstraIME\src\tip\EstraIme.Tip\dllmain.cpp;C:\Users\ROG\Documents\EstraIME\artifacts\obj\EstraIme.Tip\x64\Debug\dllmain.obj
+C:\Users\ROG\Documents\EstraIME\src\tip\EstraIme.Tip\Registrar.cpp;C:\Users\ROG\Documents\EstraIME\artifacts\obj\EstraIme.Tip\x64\Debug\Registrar.obj
+C:\Users\ROG\Documents\EstraIME\src\tip\EstraIme.Tip\TextService.cpp;C:\Users\ROG\Documents\EstraIME\artifacts\obj\EstraIme.Tip\x64\Debug\TextService.obj
+C:\Users\ROG\Documents\EstraIME\src\tip\EstraIme.Tip\TipGuids.cpp;C:\Users\ROG\Documents\EstraIME\artifacts\obj\EstraIme.Tip\x64\Debug\TipGuids.obj

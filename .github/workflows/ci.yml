@@ -1,0 +1,21 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+      - name: Restore C++ dependencies
+        run: pwsh -File .\build\Restore-Dependencies.ps1
+      - name: Build C++
+        run: pwsh -File .\build\Build-All.ps1 -SkipRust
+      - name: Build Rust
+        run: pwsh -File .\build\Build-All.ps1 -SkipCpp

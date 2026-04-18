@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EstraIME Config",
+  "type": "object",
+  "properties": {
+    "ime": {
+      "type": "object",
+      "properties": {
+        "mode_default": {
+          "type": "string",
+          "enum": ["chinese", "english"]
+        }
+      },
+      "required": ["mode_default"]
+    },
+    "llm": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "provider": { "type": "string", "enum": ["mock", "local", "cloud"] },
+        "local": {
+          "type": "object",
+          "properties": {
+            "model_id": { "type": "string" },
+            "endpoint": { "type": "string" }
+          },
+          "required": ["model_id", "endpoint"]
+        },
+        "trigger": {
+          "type": "object",
+          "properties": {
+            "pause_ms": { "type": "integer", "minimum": 50 },
+            "min_chars": { "type": "integer", "minimum": 1 },
+            "min_context_chars": { "type": "integer", "minimum": 0 }
+          },
+          "required": ["pause_ms", "min_chars", "min_context_chars"]
+        }
+      },
+      "required": ["enabled", "provider", "trigger"]
+    },
+    "privacy": {
+      "type": "object",
+      "properties": {
+        "mode": { "type": "string", "enum": ["strict", "balanced"] },
+        "cloud_opt_in": { "type": "boolean" }
+      },
+      "required": ["mode", "cloud_opt_in"]
+    },
+    "diagnostics": {
+      "type": "object",
+      "properties": {
+        "log_level": { "type": "string", "enum": ["error", "warn", "info", "debug", "trace"] }
+      },
+      "required": ["log_level"]
+    }
+  },
+  "required": ["ime", "llm", "privacy", "diagnostics"]
+}

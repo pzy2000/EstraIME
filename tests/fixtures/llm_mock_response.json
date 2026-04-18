@@ -1,0 +1,13 @@
+{
+  "method": "autocomplete.response",
+  "request_id": "req-1",
+  "generation_id": 3,
+  "suggestions": [
+    {
+      "text": "你好世界",
+      "score": 0.82,
+      "source": "llm",
+      "annotation": "mock"
+    }
+  ]
+}
