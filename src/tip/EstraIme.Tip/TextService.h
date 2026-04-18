@@ -91,6 +91,8 @@ namespace EstraIme::Tip
         TfClientId clientId_{TF_CLIENTID_NULL};
         DWORD threadMgrEventCookie_{TF_INVALID_COOKIE};
         bool chineseMode_{true};
+        bool shiftPressed_{false};
+        bool shiftChordUsed_{false};
 
         std::wstring composition_;
         std::vector<EstraIme::Candidate> traditionalCandidates_;

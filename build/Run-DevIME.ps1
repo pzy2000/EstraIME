@@ -1,12 +1,13 @@
 param(
     [ValidateSet("Debug", "Release")]
     [string]$Configuration = "Debug",
-    [switch]$StartSidecar
+    [switch]$StartSidecar,
+    [string]$DllName = "EstraIme.Tip.dll"
 )
 
 $ErrorActionPreference = "Stop"
 
-$dll = Join-Path $PSScriptRoot "..\artifacts\bin\EstraIme.Tip\x64\$Configuration\EstraIme.Tip.dll"
+$dll = Join-Path $PSScriptRoot "..\artifacts\bin\EstraIme.Tip\x64\$Configuration\$DllName"
 if (-not (Test-Path $dll)) {
     throw "TIP DLL not found at $dll. Build first."
 }

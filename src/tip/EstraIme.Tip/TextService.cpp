@@ -29,6 +29,11 @@ namespace
         return (GetKeyState(VK_LWIN) & 0x8000) != 0 || (GetKeyState(VK_RWIN) & 0x8000) != 0;
     }
 
+    bool IsShiftKey(const WPARAM vkey)
+    {
+        return vkey == VK_SHIFT || vkey == VK_LSHIFT || vkey == VK_RSHIFT;
+    }
+
     bool IsNavigationShortcut(const WPARAM vkey)
     {
         return vkey == VK_LEFT || vkey == VK_RIGHT || vkey == VK_HOME || vkey == VK_END;
@@ -230,9 +235,15 @@ namespace EstraIme::Tip
         const bool altPressed = HasAltPressed();
         const bool winPressed = HasWinPressed();
 
-        if (ctrlPressed && wParam == VK_SPACE)
+        if (shiftPressed_ && !IsShiftKey(wParam))
         {
-            *eaten = TRUE;
+            shiftChordUsed_ = true;
+        }
+
+        if (IsShiftKey(wParam))
+        {
+            shiftPressed_ = true;
+            shiftChordUsed_ = false;
             return S_OK;
         }
 
@@ -261,9 +272,24 @@ namespace EstraIme::Tip
         return S_OK;
     }
 
-    STDMETHODIMP TextService::OnTestKeyUp(ITfContext*, WPARAM, LPARAM, BOOL* eaten)
+    STDMETHODIMP TextService::OnTestKeyUp(ITfContext*, WPARAM wParam, LPARAM, BOOL* eaten)
     {
         *eaten = FALSE;
+
+        if (IsShiftKey(wParam))
+        {
+            const bool shouldToggle = shiftPressed_ && !shiftChordUsed_ && composition_.empty();
+            shiftPressed_ = false;
+            shiftChordUsed_ = false;
+
+            if (shouldToggle)
+            {
+                chineseMode_ = !chineseMode_;
+                candidateWindow_.Hide();
+                *eaten = TRUE;
+            }
+        }
+
         return S_OK;
     }
 
@@ -275,11 +301,8 @@ namespace EstraIme::Tip
         const bool winPressed = HasWinPressed();
         const bool hasComposition = !composition_.empty();
 
-        if (ctrlPressed && wParam == VK_SPACE)
+        if (IsShiftKey(wParam))
         {
-            chineseMode_ = !chineseMode_;
-            candidateWindow_.Hide();
-            *eaten = TRUE;
             return S_OK;
         }
 
@@ -412,9 +435,24 @@ namespace EstraIme::Tip
         return S_OK;
     }
 
-    STDMETHODIMP TextService::OnKeyUp(ITfContext*, WPARAM, LPARAM, BOOL* eaten)
+    STDMETHODIMP TextService::OnKeyUp(ITfContext*, WPARAM wParam, LPARAM, BOOL* eaten)
     {
         *eaten = FALSE;
+
+        if (IsShiftKey(wParam))
+        {
+            const bool shouldToggle = shiftPressed_ && !shiftChordUsed_ && composition_.empty();
+            shiftPressed_ = false;
+            shiftChordUsed_ = false;
+
+            if (shouldToggle)
+            {
+                chineseMode_ = !chineseMode_;
+                candidateWindow_.Hide();
+                *eaten = TRUE;
+            }
+        }
+
         return S_OK;
     }
 
