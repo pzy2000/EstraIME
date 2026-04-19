@@ -1,25 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product Id="*" Name="EstraIME Alpha" Language="1033" Version="0.1.0.0" Manufacturer="EstraIME" UpgradeCode="20F167E6-26C0-42F9-84B8-A382071DAB30">
-    <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" />
-    <MediaTemplate />
+    <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" Platform="x64" />
+    <MediaTemplate EmbedCab="yes" />
+    <MajorUpgrade DowngradeErrorMessage="A newer version of EstraIME Alpha is already installed." />
+
     <Feature Id="MainFeature" Title="EstraIME Alpha" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="GeneratedDataComponents" />
+      <ComponentRef Id="StartMenuShortcut" />
     </Feature>
-    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+
+    <CustomAction Id="RegisterTip"
+                  Directory="INSTALLFOLDER"
+                  ExeCommand="&quot;[SystemFolder]regsvr32.exe&quot; /s &quot;[#EstraImeTipDll]&quot;"
+                  Execute="deferred"
+                  Return="check"
+                  Impersonate="no" />
+
+    <CustomAction Id="UnregisterTip"
+                  Directory="INSTALLFOLDER"
+                  ExeCommand="&quot;[SystemFolder]regsvr32.exe&quot; /u /s &quot;[#EstraImeTipDll]&quot;"
+                  Execute="deferred"
+                  Return="ignore"
+                  Impersonate="no" />
+
+    <CustomAction Id="StopSidecar"
+                  Directory="INSTALLFOLDER"
+                  ExeCommand="&quot;[SystemFolder]taskkill.exe&quot; /F /IM sidecar-daemon.exe"
+                  Execute="deferred"
+                  Return="ignore"
+                  Impersonate="no" />
+
+    <InstallExecuteSequence>
+      <Custom Action="RegisterTip" After="InstallFiles">NOT REMOVE</Custom>
+      <Custom Action="UnregisterTip" Before="RemoveFiles">REMOVE="ALL"</Custom>
+      <Custom Action="StopSidecar" Before="RemoveFiles">REMOVE="ALL"</Custom>
+    </InstallExecuteSequence>
   </Product>
 
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFiles64Folder">
-        <Directory Id="INSTALLFOLDER" Name="EstraIME" />
+        <Directory Id="INSTALLFOLDER" Name="EstraIME">
+          <Directory Id="DATADIR" Name="data">
+            <Directory Id="DATAGENERATEDDIR" Name="generated" />
+          </Directory>
+        </Directory>
+      </Directory>
+      <Directory Id="CommonProgramsFolder">
+        <Directory Id="APPPROGRAMMENUDIR" Name="EstraIME" />
       </Directory>
     </Directory>
   </Fragment>
 
   <Fragment>
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-      <!-- TODO(installer/wix/Product.wxs): add DLL, sidecar, settings app, data files and registration custom actions. -->
+      <Component Id="CmpTipDll" Guid="*" Win64="yes">
+        <File Id="EstraImeTipDll" Name="EstraIme.Tip.dll" Source="$(var.StageRoot)\EstraIme.Tip.dll" KeyPath="yes" />
+      </Component>
+      <Component Id="CmpSettingsExe" Guid="*" Win64="yes">
+        <File Id="SettingsExe" Name="EstraIme.Settings.exe" Source="$(var.StageRoot)\EstraIme.Settings.exe" KeyPath="yes" />
+      </Component>
+      <Component Id="CmpSettingsBootstrap" Guid="*" Win64="yes">
+        <File Id="SettingsBootstrapDll" Name="Microsoft.WindowsAppRuntime.Bootstrap.dll" Source="$(var.StageRoot)\Microsoft.WindowsAppRuntime.Bootstrap.dll" KeyPath="yes" />
+      </Component>
+      <Component Id="CmpSettingsWebView2Loader" Guid="*" Win64="yes">
+        <File Id="SettingsWebView2Loader" Name="WebView2Loader.dll" Source="$(var.StageRoot)\WebView2Loader.dll" KeyPath="yes" />
+      </Component>
+      <Component Id="CmpSettingsWebView2Core" Guid="*" Win64="yes">
+        <File Id="SettingsWebView2Core" Name="Microsoft.Web.WebView2.Core.dll" Source="$(var.StageRoot)\Microsoft.Web.WebView2.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Id="CmpSettingsWebView2Projection" Guid="*" Win64="yes">
+        <File Id="SettingsWebView2Projection" Name="Microsoft.Web.WebView2.Core.Projection.dll" Source="$(var.StageRoot)\Microsoft.Web.WebView2.Core.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Id="CmpSidecarExe" Guid="*" Win64="yes">
+        <File Id="SidecarExe" Name="sidecar-daemon.exe" Source="$(var.StageRoot)\sidecar-daemon.exe" KeyPath="yes" />
+      </Component>
+      <Component Id="CmpLicense" Guid="*" Win64="yes">
+        <File Id="LicenseFile" Name="LICENSE.txt" Source="$(var.StageRoot)\LICENSE.txt" KeyPath="yes" />
+      </Component>
+      <Component Id="CmpThirdParty" Guid="*" Win64="yes">
+        <File Id="ThirdPartyFile" Name="THIRD_PARTY_NOTICES.txt" Source="$(var.StageRoot)\THIRD_PARTY_NOTICES.txt" KeyPath="yes" />
+      </Component>
+      <Component Id="CmpDefaultConfigTemplate" Guid="*" Win64="yes">
+        <File Id="DefaultConfigFile" Name="ime-config.default.json" Source="$(var.StageRoot)\ime-config.default.json" KeyPath="yes" />
+      </Component>
     </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <DirectoryRef Id="DATAGENERATEDDIR">
+      <Component Id="CmpGeneratedLexicon" Guid="*" Win64="yes">
+        <File Id="BaseLexiconFile" Name="base_lexicon.tsv" Source="$(var.StageRoot)\data\generated\base_lexicon.tsv" KeyPath="yes" />
+      </Component>
+      <Component Id="CmpGeneratedLexiconMeta" Guid="*" Win64="yes">
+        <File Id="BaseLexiconMetaFile" Name="base_lexicon.meta.json" Source="$(var.StageRoot)\data\generated\base_lexicon.meta.json" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="GeneratedDataComponents">
+      <ComponentRef Id="CmpGeneratedLexicon" />
+      <ComponentRef Id="CmpGeneratedLexiconMeta" />
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <DirectoryRef Id="APPPROGRAMMENUDIR">
+      <Component Id="StartMenuShortcut" Guid="*">
+        <Shortcut Id="SettingsShortcut"
+                  Name="EstraIME Settings"
+                  Description="Configure EstraIME"
+                  Target="[INSTALLFOLDER]EstraIme.Settings.exe"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="RemoveAppProgramMenuDir" On="uninstall" />
+        <RegistryValue Root="HKLM" Key="Software\EstraIME" Name="Installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
   </Fragment>
 </Wix>

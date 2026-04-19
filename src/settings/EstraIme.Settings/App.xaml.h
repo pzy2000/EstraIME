@@ -1,6 +1,7 @@
 #pragma once
 
 #include <winrt/Microsoft.UI.Xaml.h>
+#include <winrt/Microsoft.UI.Xaml.Controls.h>
 
 namespace winrt::EstraIme::Settings::implementation
 {

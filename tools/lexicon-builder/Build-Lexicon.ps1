@@ -1,7 +1,7 @@
 param(
     [string]$OutputPath = "$PSScriptRoot\..\..\data\generated\base_lexicon.tsv",
     [string]$CacheRoot = "$PSScriptRoot\..\..\data\cache",
-    [int]$MaxEntries = 120000,
+    [int]$MaxEntries = 140000,
     [int]$MinFreq = 5,
     [switch]$RefreshSources
 )

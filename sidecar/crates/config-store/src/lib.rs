@@ -78,8 +78,10 @@ impl Default for ImeConfig {
 }
 
 pub fn default_config_path() -> PathBuf {
-    let program_data = std::env::var("ProgramData").unwrap_or_else(|_| ".".into());
-    PathBuf::from(program_data).join("EstraIME").join("ime-config.json")
+    let local_app_data = std::env::var("LOCALAPPDATA")
+        .or_else(|_| std::env::var("HOME"))
+        .unwrap_or_else(|_| ".".into());
+    PathBuf::from(local_app_data).join("EstraIME").join("ime-config.json")
 }
 
 pub fn load_or_default() -> anyhow::Result<ImeConfig> {

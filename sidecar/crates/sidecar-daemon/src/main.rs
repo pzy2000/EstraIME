@@ -1,5 +1,5 @@
 use anyhow::Context;
-use config_store::load_or_default;
+use config_store::{load_or_default, ImeConfig};
 use provider_api::{AutocompleteRequest, CompletionProvider};
 use provider_cloud_stub::CloudStubProvider;
 use provider_llama_cpp::LlamaCppProvider;
@@ -74,15 +74,6 @@ async fn main() -> anyhow::Result<()> {
     let config = load_or_default().context("failed to load config")?;
     info!("sidecar starting with provider={}", config.llm.provider);
 
-    let provider: Arc<dyn CompletionProvider> = match config.llm.provider.as_str() {
-        "local" => Arc::new(LlamaCppProvider::new(
-            config.llm.local.endpoint.clone(),
-            config.llm.local.model_id.clone(),
-        )),
-        "cloud" => Arc::new(CloudStubProvider),
-        _ => Arc::new(MockProvider),
-    };
-
     let mut listener = ServerOptions::new()
         .first_pipe_instance(true)
         .create(PIPE_NAME)
@@ -95,20 +86,26 @@ async fn main() -> anyhow::Result<()> {
             .create(PIPE_NAME)
             .with_context(|| format!("failed to create named pipe {}", PIPE_NAME))?;
         let server = std::mem::replace(&mut listener, next_listener);
-        let provider = Arc::clone(&provider);
-
         tokio::spawn(async move {
-            if let Err(error) = handle_client(server, provider).await {
+            if let Err(error) = handle_client(server).await {
                 warn!("pipe client handling failed: {}", error);
             }
         });
     }
 }
 
-async fn handle_client(
-    mut server: tokio::net::windows::named_pipe::NamedPipeServer,
-    provider: Arc<dyn CompletionProvider>,
-) -> anyhow::Result<()> {
+fn provider_from_config(config: &ImeConfig) -> Arc<dyn CompletionProvider> {
+    match config.llm.provider.as_str() {
+        "local" => Arc::new(LlamaCppProvider::new(
+            config.llm.local.endpoint.clone(),
+            config.llm.local.model_id.clone(),
+        )),
+        "cloud" => Arc::new(CloudStubProvider),
+        _ => Arc::new(MockProvider),
+    }
+}
+
+async fn handle_client(mut server: tokio::net::windows::named_pipe::NamedPipeServer) -> anyhow::Result<()> {
     let mut len_buf = [0u8; 4];
     if server.read_exact(&mut len_buf).await.is_err() {
         return Ok(());
@@ -124,6 +121,9 @@ async fn handle_client(
             return Ok(());
         }
     };
+
+    let config = load_or_default().unwrap_or_default();
+    let provider = provider_from_config(&config);
 
     let response = match envelope.method.as_str() {
         "autocomplete.request" => {

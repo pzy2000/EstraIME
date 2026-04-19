@@ -1,0 +1,12 @@
+C:\Users\ROG\Documents\EstraIME\sidecar\target\release\deps\async_trait-8caa8ae8c6fb1acb.d: C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\lib.rs C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\args.rs C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\bound.rs C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\expand.rs C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\lifetime.rs C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\parse.rs C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\receiver.rs C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\verbatim.rs
+
+C:\Users\ROG\Documents\EstraIME\sidecar\target\release\deps\async_trait-8caa8ae8c6fb1acb.dll: C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\lib.rs C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\args.rs C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\bound.rs C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\expand.rs C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\lifetime.rs C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\parse.rs C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\receiver.rs C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\verbatim.rs
+
+C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\lib.rs:
+C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\args.rs:
+C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\bound.rs:
+C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\expand.rs:
+C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\lifetime.rs:
+C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\parse.rs:
+C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\receiver.rs:
+C:\Users\ROG\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-trait-0.1.89\src\verbatim.rs:

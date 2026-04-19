@@ -4,8 +4,7 @@
   <Bundle Name="EstraIME Alpha" Version="0.1.0.0" Manufacturer="EstraIME" UpgradeCode="8A4D2C90-E558-467D-9A91-8B30CD2D72A8">
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" />
     <Chain>
-      <!-- TODO(installer/wix/Bundle.wxs): chain VC runtime and product MSI/MSIX bootstrap strategy. -->
-      <MsiPackage SourceFile="EstraIME-Alpha.msi" />
+      <MsiPackage SourceFile="$(var.MsiPath)" DisplayInternalUI="yes" />
     </Chain>
   </Bundle>
 </Wix>

@@ -1,0 +1,7 @@
+C:\Users\ROG\Documents\EstraIME\artifacts\bin\EstraIme.Settings\x64\Debug\WebView2Loader.dll
+C:\Users\ROG\Documents\EstraIME\artifacts\obj\EstraIme.Settings\x64\Debug\EstraIme.Settings.vcxproj.AssemblyReference.cache
+C:\Users\ROG\Documents\EstraIME\artifacts\obj\EstraIme.Settings\x64\Debug\EstraIme.Settings.vcxproj.MdMergeInputs.cache
+C:\Users\ROG\Documents\EstraIME\artifacts\obj\EstraIme.Settings\x64\Debug\EstraIme.Settings.vcxproj.cppwinrt_plat.cache
+C:\Users\ROG\Documents\EstraIME\artifacts\obj\EstraIme.Settings\x64\Debug\EstraIme.Settings.vcxproj.cppwinrt_ref.cache
+C:\Users\ROG\Documents\EstraIME\artifacts\obj\EstraIme.Settings\x64\Debug\EstraIme.Settings.vcxproj.cppwinrt_comp.cache
+C:\Users\ROG\Documents\EstraIME\artifacts\obj\EstraIme.Settings\x64\Debug\EstraIme.E63C124C.Up2Date

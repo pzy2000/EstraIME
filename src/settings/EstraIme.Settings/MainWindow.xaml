@@ -2,23 +2,4 @@
     x:Class="EstraIme.Settings.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Grid Padding="20" RowSpacing="12">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-
-        <TextBlock Text="EstraIME Alpha Settings" FontSize="24" FontWeight="SemiBold" />
-        <ToggleSwitch x:Name="LlmEnabledSwitch" Grid.Row="1" Header="启用异步 LLM 自动补全" IsOn="True" />
-        <ComboBox x:Name="ProviderCombo" Grid.Row="2" Header="Provider">
-            <x:String>mock</x:String>
-            <x:String>local</x:String>
-            <x:String>cloud-disabled</x:String>
-        </ComboBox>
-        <TextBlock x:Name="StatusText" Grid.Row="3" Text="sidecar: unknown" />
-        <TextBlock Grid.Row="4" Text="TODO: 绑定本地配置、健康状态和模型下载流程。" TextWrapping="Wrap" />
-    </Grid>
 </Window>

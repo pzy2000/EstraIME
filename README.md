@@ -87,16 +87,17 @@ pwsh -File .\build\Run-DevIME.ps1 -StartSidecar
 
 ## 词典构建
 
-当前词典生成链路已经升级为真实开源数据管线：
+当前词典生成链路已经升级为双源开源数据管线：
 
 - `jieba` 默认词典提供基础词频
-- `pypinyin` 提供批量拼音转换
+- `CC-CEDICT` 提供短语拼音和多音词校正
+- `pypinyin` 提供剩余词条的 fallback 拼音转换
 - 仓库内 seed 词典继续用于强制补齐 alpha 关键词
 
 生成命令：
 
 ```powershell
-.\tools\lexicon-builder\Build-Lexicon.ps1 -MaxEntries 120000 -MinFreq 5
+.\tools\lexicon-builder\Build-Lexicon.ps1 -MaxEntries 140000 -MinFreq 5
 ```
 
 产物：

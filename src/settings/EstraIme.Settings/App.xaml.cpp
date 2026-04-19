@@ -1,6 +1,8 @@
 #include "App.xaml.h"
 #include "MainWindow.xaml.h"
 
+#include "../../common/EstraIme.Common/Log.h"
+
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
 
@@ -8,12 +10,20 @@ namespace winrt::EstraIme::Settings::implementation
 {
     App::App()
     {
-        InitializeComponent();
+        RequestedTheme(ApplicationTheme::Light);
     }
 
     void App::OnLaunched(LaunchActivatedEventArgs const&)
     {
-        window_ = make<MainWindow>();
-        window_.Activate();
+        try
+        {
+            window_ = make<MainWindow>();
+            window_.Activate();
+        }
+        catch (winrt::hresult_error const& error)
+        {
+            ::EstraIme::Common::Logger::Error(L"Settings App launch failed: " + std::wstring(error.message()));
+            throw;
+        }
     }
 }

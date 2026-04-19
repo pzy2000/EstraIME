@@ -1,0 +1,25 @@
+{
+  "ime": {
+    "mode_default": "chinese"
+  },
+  "llm": {
+    "enabled": true,
+    "provider": "mock",
+    "local": {
+      "model_id": "qwen3-1.7b-q4",
+      "endpoint": "http://127.0.0.1:8080/v1/chat/completions"
+    },
+    "trigger": {
+      "pause_ms": 180,
+      "min_chars": 4,
+      "min_context_chars": 8
+    }
+  },
+  "privacy": {
+    "mode": "strict",
+    "cloud_opt_in": false
+  },
+  "diagnostics": {
+    "log_level": "info"
+  }
+}

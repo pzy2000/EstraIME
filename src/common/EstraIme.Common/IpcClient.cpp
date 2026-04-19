@@ -118,6 +118,20 @@ namespace EstraIme::Common
         return TryEnsurePipeReady();
     }
 
+    std::wstring SidecarClient::GetHealthSummary() const
+    {
+        const auto response = SendJsonPayload(L"{\"method\":\"health.get\"}");
+        if (response.empty())
+        {
+            return L"sidecar: unavailable";
+        }
+
+        const auto backend = ExtractJsonString(response, L"backend").value_or(L"unknown");
+        const auto details = ExtractJsonString(response, L"details").value_or(L"");
+        const auto ready = ExtractJsonBool(response, L"ready").value_or(false);
+        return std::format(L"sidecar: {} ({}) {}", ready ? L"ready" : L"not ready", backend, details);
+    }
+
     EstraIme::AutocompleteResponse SidecarClient::SendRequest(const EstraIme::AutocompleteRequest& request)
     {
         EstraIme::AutocompleteResponse fallback{};
@@ -129,20 +143,40 @@ namespace EstraIme::Common
             return fallback;
         }
 
+        const auto rawResponse = SendJsonPayload(SerializeRequest(request));
+        if (rawResponse.empty())
+        {
+            return fallback;
+        }
+
+        auto response = ParseResponse(rawResponse);
+        if (response.requestId.empty())
+        {
+            response.requestId = request.requestId;
+        }
+        if (response.generationId == 0)
+        {
+            response.generationId = request.generationId;
+        }
+        return response;
+    }
+
+    std::wstring SidecarClient::SendJsonPayload(const std::wstring& payload)
+    {
         if (!TryEnsurePipeReady())
         {
-            Logger::Warn(L"Sidecar pipe unavailable; returning empty autocomplete set");
-            return fallback;
+            Logger::Warn(L"Sidecar pipe unavailable");
+            return {};
         }
 
         HANDLE pipe = CreateFileW(kPipeName, GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
         if (pipe == INVALID_HANDLE_VALUE)
         {
             Logger::Warn(L"Failed to connect to sidecar pipe");
-            return fallback;
+            return {};
         }
 
-        const auto payloadUtf8 = WideToUtf8(SerializeRequest(request));
+        const auto payloadUtf8 = WideToUtf8(payload);
         const auto payloadLength = static_cast<std::uint32_t>(payloadUtf8.size());
 
         DWORD written = 0;
@@ -154,18 +188,18 @@ namespace EstraIme::Common
         if (!ReadFile(pipe, &responseLength, sizeof(responseLength), &read, nullptr) || read != sizeof(responseLength))
         {
             CloseHandle(pipe);
-            return fallback;
+            return {};
         }
 
         std::string responseUtf8(responseLength, '\0');
         if (!ReadFile(pipe, responseUtf8.data(), responseLength, &read, nullptr))
         {
             CloseHandle(pipe);
-            return fallback;
+            return {};
         }
 
         CloseHandle(pipe);
-        return ParseResponse(Utf8ToWide(responseUtf8));
+        return Utf8ToWide(responseUtf8);
     }
 
     bool SidecarClient::TryEnsurePipeReady()

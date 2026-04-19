@@ -13,9 +13,11 @@ namespace EstraIme::Common
 
         void RequestAutocompleteAsync(const EstraIme::AutocompleteRequest& request, Callback callback) const;
         bool IsHealthy() const;
+        std::wstring GetHealthSummary() const;
 
     private:
         static EstraIme::AutocompleteResponse SendRequest(const EstraIme::AutocompleteRequest& request);
+        static std::wstring SendJsonPayload(const std::wstring& payload);
         static bool TryEnsurePipeReady();
     };
 }

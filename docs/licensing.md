@@ -18,9 +18,10 @@
 ## 当前词典来源
 
 - `jieba` 默认词典：MIT，用作基础词频源。
-- `pypinyin`：MIT，用作词条到拼音的批量转换。
+- `CC-CEDICT`：CC BY-SA 4.0，用作短语拼音和多音词校正源。
+- `pypinyin`：MIT，用作剩余词条的 fallback 拼音转换。
 
-当前这条链路保持宽松许可，避免在 alpha 阶段就把词典数据切到 ShareAlike。
+由于生成词典现在包含 `CC-CEDICT` 派生内容，`data/generated/base_lexicon.tsv` 与其元数据不再是纯宽松许可产物，发布时必须明确保留 ShareAlike 归因要求。
 
 ## 预期后续来源
 

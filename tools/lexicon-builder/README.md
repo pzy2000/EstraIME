@@ -1,35 +1,33 @@
 # lexicon-builder
 
-`lexicon-builder` 现在会从真实开源词典生成 `data/generated/base_lexicon.tsv`。
+`lexicon-builder` now builds the alpha lexicon from two real upstream sources:
 
-当前管线：
+1. `jieba` dictionary for base words and frequencies
+2. `CC-CEDICT` for phrase pronunciation overrides and phrase supplements
 
-1. 从 `jieba` 默认词典下载高频词和频次。
-2. 使用 `pypinyin` 为词条批量生成无声调拼音。
-3. 合并仓库内的人工 seed 词条。
-4. 生成：
-   - `data/generated/base_lexicon.tsv`
-   - `data/generated/base_lexicon.meta.json`
+`pypinyin` remains the fallback for entries not covered by `CC-CEDICT`.
 
-运行方式：
+Outputs:
+
+- `data/generated/base_lexicon.tsv`
+- `data/generated/base_lexicon.meta.json`
+
+Run:
 
 ```powershell
 .\tools\lexicon-builder\Build-Lexicon.ps1
 ```
 
-常用参数：
+Common options:
 
 ```powershell
-.\tools\lexicon-builder\Build-Lexicon.ps1 -MaxEntries 150000 -MinFreq 3 -RefreshSources
+.\tools\lexicon-builder\Build-Lexicon.ps1 -MaxEntries 140000 -MinFreq 5 -RefreshSources
 ```
 
-当前来源：
+License notes:
 
-- `jieba` 词典：MIT
-- `pypinyin`：MIT
+- `jieba`: MIT
+- `pypinyin`: MIT
+- `CC-CEDICT`: CC BY-SA 4.0
 
-后续增强：
-
-1. 引入额外短语词典和更高质量的多音词覆盖。
-2. 生成二进制 trie，降低 TIP 冷启动开销。
-3. 加入领域词典分层和用户词典快照合并。
+That means generated lexicon artifacts now carry mixed-data obligations and must be documented accordingly before public alpha release.

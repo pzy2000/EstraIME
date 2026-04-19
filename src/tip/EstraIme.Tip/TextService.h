@@ -10,6 +10,7 @@
 #include <winrt/base.h>
 
 #include <atomic>
+#include <filesystem>
 #include <memory>
 #include <mutex>
 #include <thread>
@@ -72,6 +73,7 @@ namespace EstraIme::Tip
         void RebuildCandidates();
         void RefreshVisiblePage();
         void ScheduleAsyncAutocomplete();
+        void LoadConfigIfChanged();
         void CommitCandidate(ITfContext* context, const std::wstring& text);
         void CommitRawCompositionAsEnglish(ITfContext* context);
         void CancelComposition(ITfContext* context);
@@ -94,6 +96,7 @@ namespace EstraIme::Tip
         bool chineseMode_{true};
         bool shiftPressed_{false};
         bool shiftChordUsed_{false};
+        std::filesystem::file_time_type configLastWrite_{};
 
         std::wstring composition_;
         std::vector<EstraIme::Candidate> traditionalCandidates_;

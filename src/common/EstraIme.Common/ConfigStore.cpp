@@ -11,14 +11,14 @@ namespace
 {
     std::wstring EnsureConfigRoot()
     {
-        PWSTR programDataRaw = nullptr;
-        if (FAILED(SHGetKnownFolderPath(FOLDERID_ProgramData, KF_FLAG_DEFAULT, nullptr, &programDataRaw)))
+        PWSTR localAppDataRaw = nullptr;
+        if (FAILED(SHGetKnownFolderPath(FOLDERID_LocalAppData, KF_FLAG_DEFAULT, nullptr, &localAppDataRaw)))
         {
             return L".\\ime-config.json";
         }
 
-        std::wstring root(programDataRaw);
-        CoTaskMemFree(programDataRaw);
+        std::wstring root(localAppDataRaw);
+        CoTaskMemFree(localAppDataRaw);
         std::filesystem::path path = std::filesystem::path(root) / L"EstraIME";
         std::filesystem::create_directories(path);
         return path.wstring();

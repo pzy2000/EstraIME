@@ -146,6 +146,9 @@ namespace EstraIme::Tip
     TextService::TextService()
         : config_(Common::ConfigStore::Load())
     {
+        std::error_code ec;
+        const auto path = Common::ConfigStore::DefaultPath();
+        configLastWrite_ = std::filesystem::exists(path, ec) ? std::filesystem::last_write_time(path, ec) : std::filesystem::file_time_type::min();
         chineseMode_ = config_.defaultMode != L"english";
     }
 
@@ -288,6 +291,7 @@ namespace EstraIme::Tip
     STDMETHODIMP TextService::OnKeyDown(ITfContext* context, const WPARAM wParam, LPARAM, BOOL* eaten)
     {
         *eaten = FALSE;
+        LoadConfigIfChanged();
         const bool ctrlPressed = HasCtrlPressed();
         const bool altPressed = HasAltPressed();
         const bool winPressed = HasWinPressed();
@@ -569,6 +573,7 @@ namespace EstraIme::Tip
 
     void TextService::ScheduleAsyncAutocomplete()
     {
+        LoadConfigIfChanged();
         if (!ShouldTriggerAsync())
         {
             return;
@@ -697,6 +702,21 @@ namespace EstraIme::Tip
         return config_.llmEnabled &&
             config_.llmProvider != L"cloud" &&
             composition_.size() >= static_cast<std::size_t>(config_.trigger.minChars);
+    }
+
+    void TextService::LoadConfigIfChanged()
+    {
+        std::error_code ec;
+        const auto path = Common::ConfigStore::DefaultPath();
+        const auto currentWrite = std::filesystem::exists(path, ec) ? std::filesystem::last_write_time(path, ec) : std::filesystem::file_time_type::min();
+        if (currentWrite == configLastWrite_)
+        {
+            return;
+        }
+
+        config_ = Common::ConfigStore::Load();
+        configLastWrite_ = currentWrite;
+        Common::Logger::Info(L"IME config reloaded");
     }
 
     void TextService::MovePage(const int delta)

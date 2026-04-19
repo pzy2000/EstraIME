@@ -1,0 +1,1 @@
+C:\Users\ROG\Documents\EstraIME\artifacts\cargo-installer-target\debug\libprovider_mock.rlib: C:\Users\ROG\Documents\EstraIME\sidecar\crates\provider-api\src\lib.rs C:\Users\ROG\Documents\EstraIME\sidecar\crates\provider-mock\src\lib.rs
